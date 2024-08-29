@@ -1,6 +1,6 @@
 syntax = "proto3";
 package pb;
-option go_package = "github.com/v-starostin/goph-keeper/internal/pb";
+option go_package = "github.com/v-starostin/goph-keeper/pkg/pb";
 
 service Auth {
   rpc Authenticate(AuthenticateRequest) returns (AuthenticateResponse);

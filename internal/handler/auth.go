@@ -3,7 +3,7 @@ package handler
 import (
 	"context"
 
-	"github.com/v-starostin/goph-keeper/internal/pb"
+	"github.com/v-starostin/goph-keeper/pkg/pb"
 )
 
 type AuthService interface {
@@ -20,14 +20,16 @@ func New(s AuthService) *Auth {
 	return &Auth{service: s}
 }
 
-func (a *Auth) Authenticate(context.Context, *pb.AuthenticateRequest) (*pb.AuthenticateResponse, error) {
+func (a *Auth) Authenticate(ctx context.Context, in *pb.AuthenticateRequest) (*pb.AuthenticateResponse, error) {
 	//return nil, status.Errorf(codes.Unimplemented, "method Authenticate not implemented")
+	username := in.GetUsername()
+
 	return &pb.AuthenticateResponse{
-		AccessToken:  "access_token",
-		RefreshToken: "refresh_token",
+		AccessToken:  username + "'s " + "access_token",
+		RefreshToken: username + "'s " + "refresh_token",
 	}, nil
 }
-func (a *Auth) Refresh(context.Context, *pb.RefreshRequest) (*pb.RefreshResponse, error) {
+func (a *Auth) Refresh(ctx context.Context, in *pb.RefreshRequest) (*pb.RefreshResponse, error) {
 	return &pb.RefreshResponse{
 		AccessToken:  "access_refresh_token",
 		RefreshToken: "refresh_refresh_token",

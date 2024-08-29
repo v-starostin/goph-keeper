@@ -7,7 +7,7 @@ import (
 	"google.golang.org/grpc"
 
 	"github.com/v-starostin/goph-keeper/internal/handler"
-	"github.com/v-starostin/goph-keeper/internal/pb"
+	"github.com/v-starostin/goph-keeper/pkg/pb"
 )
 
 func main() {
