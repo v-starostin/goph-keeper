@@ -19,14 +19,43 @@ const (
 )
 
 func main() {
-	bucket := "your-s3-bucket"
+	bucket := "test-bucket-1-2-3"
 	key := "your/large-file-key"
-	filePath := "/path/to/your/large-file"
+	filePath := "./internal/examples/resultfile.jpeg"
+
+	//err := Upload(context.TODO())
+	//if err != nil {
+	//	log.Fatalf("Failed to upload file 2: %v", err)
+	//}
 
 	err := uploadFileInChunks(bucket, key, filePath)
 	if err != nil {
 		log.Fatalf("Failed to upload file: %v", err)
 	}
+}
+
+func Upload(ctx context.Context) error {
+	// Load AWS credentials and S3 config
+	cfg, err := config.LoadDefaultConfig(context.TODO())
+	if err != nil {
+		return fmt.Errorf("failed to load configuration: %w", err)
+	}
+
+	s3Client := s3.NewFromConfig(cfg)
+
+	// Open the file for reading
+	//file, err := os.Open("./internal/examples/resultfile.jpeg")
+	//if err != nil {
+	//	return fmt.Errorf("failed to open file: %w", err)
+	//}
+	//defer file.Close()
+
+	_, err = s3Client.PutObject(ctx, &s3.PutObjectInput{
+		Bucket: aws.String("111-222-333-444-555-666-1"),
+		Key:    aws.String("your/large-file-key-2"),
+		Body:   bytes.NewReader([]byte("qwerty")),
+	})
+	return err
 }
 
 // uploadFileInChunks uploads a large file to S3 in chunks using multipart upload
@@ -78,7 +107,7 @@ func uploadFileInChunks(bucket, key, filePath string) error {
 			Bucket:     aws.String(bucket),
 			Key:        aws.String(key),
 			UploadId:   uploadID,
-			PartNumber: int32(partNumber),
+			PartNumber: aws.Int32(int32(partNumber)),
 			Body:       bytes.NewReader(partBuffer),
 		})
 		if err != nil {
@@ -97,7 +126,7 @@ func uploadFileInChunks(bucket, key, filePath string) error {
 		fmt.Printf("Uploaded part %d, ETag: %s\n", partNumber, *uploadResp.ETag)
 		completedParts = append(completedParts, types.CompletedPart{
 			ETag:       uploadResp.ETag,
-			PartNumber: int32(partNumber),
+			PartNumber: aws.Int32(int32(partNumber)),
 		})
 
 		partNumber++
